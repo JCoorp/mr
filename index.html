@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Simple 3D - Dos Pisos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Modelo 3D ligero · TV compatible</span>
+        <h1>Casa simple de dos pisos</h1>
+      </div>
+      <div class="status"><span id="statusDot" class="dot loading"></span><strong id="message">Cargando modelo...</strong></div>
+    </header>
+    <section class="viewerCard">
+      <canvas id="viewer"></canvas>
+      <div id="loader" class="loader"><div class="spinner"></div><h2>Cargando casa 3D</h2><p>Modelo ligero para web y TV.</p></div>
+      <div id="errorBox" class="errorBox hidden"><h2>No se pudo cargar</h2><p>Este navegador/TV puede no soportar WebGL.</p></div>
+      <div class="controls">
+        <button id="resetView">Reiniciar vista</button>
+        <button id="toggleRotate">Auto-rotación: On</button>
+        <button id="toggleKeyboardMove">Movimiento libre: On</button>
+      </div>
+      <div class="hud"><span>Mouse/touch: rotar</span><span>Rueda/pellizco: zoom</span><span>WASD/Flechas: moverte</span></div>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

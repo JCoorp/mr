@@ -7,6 +7,7 @@ var err = document.getElementById('errorBox');
 var resetBtn = document.getElementById('resetView');
 var rotateBtn = document.getElementById('toggleRotate');
 var moveBtn = document.getElementById('toggleKeyboardMove');
+var mouseLookBtn = document.getElementById('mouseLookBtn');
 var fullscreenBtn = document.getElementById('fullscreenBtn');
 
 function setStatus(t, type) {
@@ -183,6 +184,11 @@ show(loader, false);
 setStatus('Casa simple lista.', 'ready');
 
 var keyboardMoveEnabled = true;
+var mouseLookEnabled = true;
+var isPointerLocked = false;
+var yaw = 0;
+var pitch = 0;
+var mouseSensitivity = 0.0022;
 var pressed = {};
 var clock = new THREE.Clock();
 
@@ -193,6 +199,37 @@ function resize() {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
+function syncMouseLookFromCamera() {
+  var euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
+  pitch = euler.x;
+  yaw = euler.y;
+}
+function enterMouseLook() {
+  if (!mouseLookEnabled) return;
+  syncMouseLookFromCamera();
+  if (canvas.requestPointerLock) canvas.requestPointerLock();
+}
+function updatePointerLockState() {
+  isPointerLocked = document.pointerLockElement === canvas;
+  controls.enabled = !isPointerLocked;
+  if (mouseLookBtn) mouseLookBtn.textContent = isPointerLocked ? 'Mirada mouse: Activa' : 'Mirada mouse: Clic';
+  if (!isPointerLocked) syncMouseLookFromCamera();
+}
+document.addEventListener('pointerlockchange', updatePointerLockState);
+document.addEventListener('mousemove', function(e) {
+  if (!isPointerLocked || !mouseLookEnabled) return;
+  yaw -= e.movementX * mouseSensitivity;
+  pitch -= e.movementY * mouseSensitivity;
+  var limit = Math.PI / 2 - 0.06;
+  pitch = Math.max(-limit, Math.min(limit, pitch));
+  camera.quaternion.setFromEuler(new THREE.Euler(pitch, yaw, 0, 'YXZ'));
+  var forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  controls.target.copy(camera.position).add(forward.multiplyScalar(5));
+});
+canvas.addEventListener('click', enterMouseLook);
+mouseLookBtn.addEventListener('click', enterMouseLook);
+
 function updateMove(dt) {
   if (!keyboardMoveEnabled) return;
   var forward = new THREE.Vector3();
@@ -205,15 +242,17 @@ function updateMove(dt) {
   if (pressed.arrowdown || pressed.s) move.sub(forward);
   if (pressed.arrowright || pressed.d) move.add(right);
   if (pressed.arrowleft || pressed.a) move.sub(right);
+  if (pressed.q || pressed.pageup || pressed[' ']) move.y += 1;
+  if (pressed.e || pressed.pagedown || pressed.control || pressed.x) move.y -= 1;
   if (move.lengthSq() === 0) return;
   move.normalize().multiplyScalar((pressed.shift ? 5 : 2.1) * dt);
   camera.position.add(move);
   controls.target.add(move);
-  controls.update();
+  if (!isPointerLocked) controls.update();
 }
 window.addEventListener('keydown', function(e) {
   var k = e.key.toLowerCase();
-  if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','shift'].indexOf(k) >= 0) {
+  if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','x','pageup','pagedown','shift','control',' '].indexOf(k) >= 0) {
     e.preventDefault();
     pressed[k] = true;
   }
@@ -225,6 +264,7 @@ resetBtn.addEventListener('click', function() {
   camera.position.copy(initialCamera.pos);
   controls.target.copy(initialCamera.target);
   controls.update();
+  syncMouseLookFromCamera();
 });
 rotateBtn.addEventListener('click', function(e) {
   controls.autoRotate = !controls.autoRotate;
@@ -244,8 +284,9 @@ window.addEventListener('resize', resize);
 function animate() {
   requestAnimationFrame(animate);
   updateMove(clock.getDelta());
-  controls.update();
+  if (!isPointerLocked) controls.update();
   renderer.render(scene, camera);
 }
 resize();
+syncMouseLookFromCamera();
 animate();

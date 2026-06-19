@@ -242,8 +242,8 @@ function updateMove(dt) {
   if (pressed.arrowdown || pressed.s) move.sub(forward);
   if (pressed.arrowright || pressed.d) move.add(right);
   if (pressed.arrowleft || pressed.a) move.sub(right);
-  if (pressed.q || pressed.pageup || pressed[' ']) move.y += 1;
-  if (pressed.e || pressed.pagedown || pressed.control || pressed.x) move.y -= 1;
+  if (pressed.q) move.y += 1;
+  if (pressed.e) move.y -= 1;
   if (move.lengthSq() === 0) return;
   move.normalize().multiplyScalar((pressed.shift ? 5 : 2.1) * dt);
   camera.position.add(move);
@@ -252,7 +252,7 @@ function updateMove(dt) {
 }
 window.addEventListener('keydown', function(e) {
   var k = e.key.toLowerCase();
-  if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','x','pageup','pagedown','shift','control',' '].indexOf(k) >= 0) {
+  if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','q','e','shift'].indexOf(k) >= 0) {
     e.preventDefault();
     pressed[k] = true;
   }

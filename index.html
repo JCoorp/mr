@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casa 3D Simple - Dos Pisos</title>
+  <title>Casa 3D GLB - Visor Web</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="app">
     <header class="topbar">
       <div>
-        <span class="eyebrow">Visor 3D ligero · TV compatible</span>
-        <h1>Casa moderna simple</h1>
+        <span class="eyebrow">Visor 3D ligero · GLB · GitHub Pages</span>
+        <h1>Casa moderna 3D</h1>
       </div>
-      <div class="status"><span id="statusDot" class="dot loading"></span><strong id="message">Creando casa 3D...</strong></div>
+      <div class="status"><span id="statusDot" class="dot loading"></span><strong id="message">Cargando modelo 3D...</strong></div>
     </header>
     <section class="viewerCard">
       <canvas id="viewer"></canvas>
-      <div id="loader" class="loader"><div class="spinner"></div><h2>Creando casa 3D</h2><p>Modelo procedural ligero, sin archivos GLB pesados.</p></div>
-      <div id="errorBox" class="errorBox hidden"><h2>No se pudo cargar</h2><p>Este navegador/TV puede no soportar WebGL.</p></div>
+      <div id="loader" class="loader"><div class="spinner"></div><h2>Cargando casa 3D</h2><p>Modelo GLB optimizado para visor web.</p></div>
+      <div id="errorBox" class="errorBox hidden"><h2>No se pudo cargar</h2><p>Este navegador/TV puede no soportar WebGL o el modelo GLB no está disponible.</p></div>
       <div class="controls">
         <button id="resetView">Reiniciar vista</button>
         <button id="toggleRotate">Auto-rotación: On</button>
@@ -31,6 +31,7 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
